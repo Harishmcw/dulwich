@@ -38,8 +38,10 @@ jobs:
           # Install build-time dependencies
           python -m pip install --upgrade "setuptools>=77"
           python -m pip install --upgrade pip
-          # paramiko is skipped on Windows ARM64 as cryptography has no wheels for it
-          pip install --upgrade ".[merge,fastimport${{ matrix.os != 'windows-11-arm' && ',paramiko' || '' }},https,patiencediff,colordiff,range_diff]"  setuptools-rust
+          pip install --upgrade ".[merge,fastimport,https,patiencediff,colordiff,range_diff]"  setuptools-rust
+      - name: Install paramiko on platforms with cryptography wheels
+        run: pip install --upgrade ".[paramiko]"
+        if: "matrix.os != 'windows-11-arm'"
       - name: Install pysequoia on platforms with wheels
         run: pip install --upgrade --only-binary pysequoia ".[sequoia]"
         if: "matrix.os == 'ubuntu-latest' || (matrix.os != 'windows-11-arm' && matrix.python-version != '3.10' && matrix.python-version != '3.15')"
